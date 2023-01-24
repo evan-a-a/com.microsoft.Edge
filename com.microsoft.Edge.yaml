@@ -23,6 +23,7 @@ finish-args:
   - --socket=wayland
   - --require-version=1.8.2
   - --system-talk-name=org.freedesktop.UPower
+  - --talk-name=com.microsoft.identity.broker1
   - --talk-name=org.freedesktop.FileManager1
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.ScreenSaver
@@ -80,6 +81,22 @@ modules:
           type: git
           tag-pattern: ^v([\d.]+)$
 
+  - name: sdbus
+    buildsystem: cmake
+    config-opts:
+      - -DBUILD_DOC=false
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: git
+        url: https://github.com/Kistler-Group/sdbus-cpp
+        tag: v1.2.0
+        commit: 751c1addc4fd2f949a466f488c1b7de2ca3b76dc
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\d.]+)$
+    cleanup:
+      - /include
+
   - name: edge
     buildsystem: simple
     build-commands:
@@ -106,6 +123,17 @@ modules:
           dist: stable
           component: main
         size: 146325178
+      - type: extra-data
+        url: https://packages.microsoft.com/ubuntu/22.04/prod/pool/main/m/msalsdk-dbusclient/msalsdk-dbusclient_1.0.1_amd64.deb
+        sha256: 0153eb3710a35c6cdada01844cfd18ae55de12023a02396b4954eda8a6f65012
+        size: 9278
+        filename: msalsdk.deb
+        x-checker-data:
+          type: debian-repo
+          root: https://packages.microsoft.com/ubuntu/22.04/prod
+          dist: jammy
+          component: main
+          package-name: msalsdk-dbusclient
       - type: script
         dest-filename: stub_sandbox.sh
         commands:
